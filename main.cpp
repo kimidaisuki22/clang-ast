@@ -127,6 +127,13 @@ template <> struct fmt::formatter<Class_info> {
 };
 #include <unordered_map>
 std::unordered_map<std::string, Class_info> classes;
+struct Member_function_info {
+  std::string name;
+  std::string type;
+
+  std::string parent;
+};
+std::unordered_map<std::string, std::vector<Member_function_info>> methods;
 
 int main() {
   CXIndex index = clang_createIndex(1, 0);
@@ -181,8 +188,16 @@ int main() {
           e.value = clang_getEnumConstantDeclValue(c);
           e.parent = parent_name;
           e.parent_type = type_name;
-          e.name = name;
+          e.name = display_name;
           enums_values[e.parent_type].push_back(e);
+        }
+        if (is_target && kind == CXCursor_CXXMethod) {
+          Member_function_info info{};
+          info.name = display_name;
+          info.type = type_name;
+          info.parent = parent_name;
+
+          methods[info.parent].push_back(info);
         }
         if (is_target) {
           cout << "Cursor '" << name << "' of kind '" << kind_name
@@ -208,13 +223,18 @@ int main() {
     c.name = n;
     fmt::print("{}", c);
   }
-  for(auto [e,values]:enums_values){
-    fmt::println("Enum : {}",e);
-    for(auto v: values){
-      fmt::println("\t{}: {}",v.name,v.value);
+  for (auto [e, values] : enums_values) {
+    fmt::println("Enum: {}", e);
+    for (auto v : values) {
+      fmt::println("\t{}: {}", v.name, v.value);
     }
   }
-
+  for (auto [class_name, values] : methods) {
+    fmt::println("class: {}", class_name);
+    for (auto v : values) {
+      fmt::println("\t{}: {}", v.name, v.type);
+    }
+  }
   clang_disposeTranslationUnit(unit);
   clang_disposeIndex(index);
 }
