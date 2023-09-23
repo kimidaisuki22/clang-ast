@@ -42,9 +42,14 @@ struct vec3 {
   float x;
   float y, z;
 
+  inline constexpr static int size = 3;
+
   float *data() { return &x; }
   const float *data() const { return &x; }
   float distance(vec3 v){
     return 0;
+  }
+  static vec3 one(){
+    return {1,1,1};
   }
 };
