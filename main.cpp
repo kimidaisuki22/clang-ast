@@ -1,9 +1,11 @@
 #include <clang-c/CXString.h>
 #include <clang-c/Index.h>
+#include <cstdint>
 #include <fmt/core.h>
 #include <iostream>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 using namespace std;
 
@@ -33,6 +35,15 @@ struct Class_info {
   std::vector<Member_info> members;
   std::string name;
 };
+
+struct Enums {
+  std::string parent;
+  std::string parent_type;
+
+  std::string name;
+  uint64_t value;
+};
+std::unordered_map<std::string, std::vector<Enums>> enums_values;
 
 #include <fmt/format.h>
 
@@ -164,8 +175,16 @@ int main() {
 
         auto type_name =
             to_string(clang_getTypeSpelling(clang_getCursorType(c)));
-
-        if ((checked) && in_unit) {
+        const bool is_target = checked && in_unit;
+        if (is_target && kind == CXCursor_EnumConstantDecl) {
+          Enums e{};
+          e.value = clang_getEnumConstantDeclValue(c);
+          e.parent = parent_name;
+          e.parent_type = type_name;
+          e.name = name;
+          enums_values[e.parent_type].push_back(e);
+        }
+        if (is_target) {
           cout << "Cursor '" << name << "' of kind '" << kind_name
                << "' name: " << display_name << " parent: " << parent_name;
           if (kind == CXCursor_EnumConstantDecl) {
@@ -188,6 +207,12 @@ int main() {
   for (auto [n, c] : classes) {
     c.name = n;
     fmt::print("{}", c);
+  }
+  for(auto [e,values]:enums_values){
+    fmt::println("Enum : {}",e);
+    for(auto v: values){
+      fmt::println("\t{}: {}",v.name,v.value);
+    }
   }
 
   clang_disposeTranslationUnit(unit);
