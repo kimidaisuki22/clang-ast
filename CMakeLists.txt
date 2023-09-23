@@ -30,6 +30,7 @@ include(CPack)
   target_link_libraries(ast PRIVATE ${llvm_libs}  ${CLANG_LIBS})
 
   find_package(fmt CONFIG REQUIRED)
+  find_package(nlohmann_json CONFIG REQUIRED)
   target_link_libraries(ast PRIVATE fmt::fmt)
   add_executable(test_p test.cpp)
-  target_link_libraries(test_p PRIVATE fmt::fmt)
+  target_link_libraries(test_p PRIVATE fmt::fmt  nlohmann_json::nlohmann_json)

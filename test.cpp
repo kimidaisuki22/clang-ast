@@ -1,4 +1,5 @@
 #include "reflection.hpp"
+#include "reflection_ext.hpp"
 #include <filesystem>
 #include <iostream>
 
@@ -36,32 +37,36 @@ struct Point {
   std::string name;
   std::filesystem::path path;
 };
-constexpr void for_each_member(const Point &data,auto&& callback){
-        callback(data.x,"int", "x", 0);
-        callback(data.y,"int", "y", 1);
-        callback(data.b,"Constants::Box", "b", 2);
-        callback(data.name,"std::string", "name", 3);
-        callback(data.path,"std::filesystem::path", "path", 4);
+constexpr void for_each_member(const Point &data, auto &&callback) {
+  callback(data.x, "int", "x", 0);
+  callback(data.y, "int", "y", 1);
+  callback(data.b, "Constants::Box", "b", 2);
+  callback(data.name, "std::string", "name", 3);
+  callback(data.path, "std::filesystem::path", "path", 4);
 }
-constexpr void for_each_member( Point &data,auto&& callback){
-        callback(data.x,"int", "x", 0);
-        callback(data.y,"int", "y", 1);
-        callback(data.b,"Constants::Box", "b", 2);
-        callback(data.name,"std::string", "name", 3);
-        callback(data.path,"std::filesystem::path", "path", 4);
+constexpr void for_each_member(Point &data, auto &&callback) {
+  callback(data.x, "int", "x", 0);
+  callback(data.y, "int", "y", 1);
+  callback(data.b, "Constants::Box", "b", 2);
+  callback(data.name, "std::string", "name", 3);
+  callback(data.path, "std::filesystem::path", "path", 4);
 }
-constexpr void for_each_member( Point &&data,auto&& callback){
-        callback(data.x,"int", "x", 0);
-        callback(data.y,"int", "y", 1);
-        callback(data.b,"Constants::Box", "b", 2);
-        callback(data.name,"std::string", "name", 3);
-        callback(data.path,"std::filesystem::path", "path", 4);
+constexpr void for_each_member(Point &&data, auto &&callback) {
+  callback(data.x, "int", "x", 0);
+  callback(data.y, "int", "y", 1);
+  callback(data.b, "Constants::Box", "b", 2);
+  callback(data.name, "std::string", "name", 3);
+  callback(data.path, "std::filesystem::path", "path", 4);
 }
+#include <nlohmann/json.hpp>
 int main() {
   std::cout << creflec::get_member_size(Point{}) << "\n";
   Point p;
   const auto cp = p;
   std::cout << creflec::get_member_size(p) << "\n";
   std::cout << creflec::get_member_size(cp) << "\n";
-  for_each_member(cp,creflec::print_call_back);
+  for_each_member(cp, creflec::print_call_back);
+  nlohmann::json json;
+  creflec::to_json(p, json);
+  std::cout << json << "\n";
 }
