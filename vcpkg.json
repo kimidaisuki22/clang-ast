@@ -6,6 +6,7 @@
         {
             "name": "llvm",
             "features": ["clang", "clang-tools-extra"]
-        }
-    ] 
+        },
+        "fmt"
+    ]
 }
