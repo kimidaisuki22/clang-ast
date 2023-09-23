@@ -206,6 +206,15 @@ int main() {
             std::cout << " value: " << clang_getEnumConstantDeclValue(c);
           }
           std::cout << " type: " << type_name << "\n";
+          {
+            // clang_getExpansionLocation() ;
+            CXFile file{};
+            uint32_t line{}, col{}, offset{};
+            clang_getSpellingLocation(location, &file, &line, &col, &offset);
+            fmt::println("Location {}:{}:{} [{}]",
+                         clang_getCString(clang_getFileName(file)), line, col,
+                         offset);
+          }
 
           if (kind == CXCursor_FieldDecl) {
             Member_info member;
