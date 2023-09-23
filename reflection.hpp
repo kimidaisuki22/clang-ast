@@ -41,7 +41,7 @@ std::optional<T> get_as(auto &target, std::string_view target_name) {
 }
 
 constexpr int get_member_size(const auto &target) {
-  int size;
+  int size{};
   for_each_member(target, [&size](auto, auto, auto, auto) { size++; });
   return size;
 }
