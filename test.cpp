@@ -63,4 +63,5 @@ int main() {
   const auto cp = p;
   std::cout << creflec::get_member_size(p) << "\n";
   std::cout << creflec::get_member_size(cp) << "\n";
+  for_each_member(cp,creflec::print_call_back);
 }

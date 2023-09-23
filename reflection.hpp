@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <optional>
 #include <string_view>
 namespace creflec {
@@ -45,4 +46,11 @@ constexpr int get_member_size(const auto &target) {
   for_each_member(target, [&size](auto, auto, auto, auto) { size++; });
   return size;
 }
+constexpr auto print_call_back = [](auto v, auto t, auto n, auto idx) {
+  if constexpr (requires { std::cout << v; }) {
+    std::cout << t << " " << n << "[" << v << "] " << idx << "\n";
+  } else {
+    std::cout << t << " " << n << " <" << "Type not support" << "> pos: " << idx << "\n";
+  }
+};
 } // namespace creflec
