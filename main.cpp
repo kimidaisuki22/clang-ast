@@ -1,5 +1,6 @@
 #include <clang-c/CXString.h>
 #include <clang-c/Index.h>
+#include <fmt/core.h>
 #include <iostream>
 #include <string>
 #include <string_view>
@@ -88,15 +89,28 @@ template <> struct fmt::formatter<Class_info> {
       iter = fmt::format_to(iter, "\t{}\n", v);
     }
     iter = fmt::format_to(iter, "}};\n");
-    int i{};
-    iter = fmt::format_to(
-        iter, "constexpr void for_each_member({} &data,auto&& callback){{\n", p.name);
-    for (auto &v : p.members) {
-      iter = fmt::format_to(iter, "\tcallback(data.{},\"{}\", \"{}\", {});\n",
-                            v.name, v.type, v.name, i);
-      i++;
+
+    {
+      int i{};
+      std::string body;
+      for (auto &v : p.members) {
+        body += fmt::format("\tcallback(data.{},\"{}\", \"{}\", {});\n", v.name,
+                            v.type, v.name, i);
+        i++;
+      }
+      auto add_functions = [&](std::string_view const_str,
+                               std::string_view ref_str) {
+        iter = fmt::format_to(
+            iter,
+            "constexpr void for_each_member({} {} {}data,auto&& callback){{\n",
+            const_str, p.name, ref_str);
+        iter = fmt::format_to(iter, "{}", body);
+        iter = fmt::format_to(iter, "}}\n");
+      };
+      add_functions("const", "&");
+      add_functions("", "&");
+      add_functions("", "&&");
     }
-    iter = fmt::format_to(iter, "}}\n");
     return iter;
   }
 };

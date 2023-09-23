@@ -2,7 +2,7 @@
 #include <filesystem>
 #include <iostream>
 
-class Box{};
+class Box {};
 enum class fox {
   red,
   blue,
@@ -36,11 +36,31 @@ struct Point {
   std::string name;
   std::filesystem::path path;
 };
-constexpr void for_each_member(const Point &data, auto &&callback) {
-  callback(data.x, "int", "x", 0);
-  callback(data.y, "int", "y", 1);
-  callback(data.b, "Constants::Box", "b", 2);
-  callback(data.name, "std::string", "name", 3);
-  callback(data.path, "std::filesystem::path", "path", 4);
+constexpr void for_each_member(const Point &data,auto&& callback){
+        callback(data.x,"int", "x", 0);
+        callback(data.y,"int", "y", 1);
+        callback(data.b,"Constants::Box", "b", 2);
+        callback(data.name,"std::string", "name", 3);
+        callback(data.path,"std::filesystem::path", "path", 4);
 }
-int main() { std::cout << creflec::get_member_size(Point{}) << "\n"; }
+constexpr void for_each_member( Point &data,auto&& callback){
+        callback(data.x,"int", "x", 0);
+        callback(data.y,"int", "y", 1);
+        callback(data.b,"Constants::Box", "b", 2);
+        callback(data.name,"std::string", "name", 3);
+        callback(data.path,"std::filesystem::path", "path", 4);
+}
+constexpr void for_each_member( Point &&data,auto&& callback){
+        callback(data.x,"int", "x", 0);
+        callback(data.y,"int", "y", 1);
+        callback(data.b,"Constants::Box", "b", 2);
+        callback(data.name,"std::string", "name", 3);
+        callback(data.path,"std::filesystem::path", "path", 4);
+}
+int main() {
+  std::cout << creflec::get_member_size(Point{}) << "\n";
+  Point p;
+  const auto cp = p;
+  std::cout << creflec::get_member_size(p) << "\n";
+  std::cout << creflec::get_member_size(cp) << "\n";
+}
