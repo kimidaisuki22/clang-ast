@@ -32,7 +32,6 @@ bool set_as(auto &target, std::string_view target_name, const auto &value) {
 #include <optional>
 template <typename T>
 std::optional<T> get_as(auto &target, std::string_view target_name) {
-  bool result = false;
   std::optional<T> result_value;
   for_each_member(target, [&](auto &target_prop, auto, auto name, auto) {
     if constexpr (requires {
@@ -41,14 +40,8 @@ std::optional<T> get_as(auto &target, std::string_view target_name) {
                   }) {
       if (name == target_name) {
         result_value = target_prop;
-        result = true;
-        return true;
-      } else {
-        return false;
       }
-    } else {
-      return false;
-    }
+                  }
   });
 
   return result_value;

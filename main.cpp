@@ -21,7 +21,7 @@ std::string to_string(const CXString &str) {
   clang_disposeString(str);
   return s;
 }
-bool pos_check(std::string_view str, int pos, char ch) {
+bool pos_check(std::string_view str, size_t pos, char ch) {
   if (str.size() <= pos) {
     return false;
   }
@@ -69,7 +69,7 @@ template <> struct fmt::formatter<Member_info> {
     // for equality with ctx.end().
 
     // Parse the presentation format and store it in the formatter:
-    auto it = ctx.begin(), end = ctx.end();
+    auto it = ctx.begin();
 
     // Check if reached the end of the range:
     // if (it != end && *it != '}')
@@ -90,7 +90,7 @@ template <> struct fmt::formatter<Member_info> {
 template <> struct fmt::formatter<Class_info> {
   constexpr auto parse(format_parse_context &ctx)
       -> format_parse_context::iterator {
-    auto it = ctx.begin(), end = ctx.end();
+    auto it = ctx.begin();
 
     return it;
   }
