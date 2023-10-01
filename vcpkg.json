@@ -1,11 +1,12 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-    "name": "ez",
+    "name": "clang-ast",
     "version": "0.1.0",
     "dependencies": [
         {
             "name": "llvm",
-            "features": ["clang", "clang-tools-extra"]
+            "default-features": false,
+            "features": ["clang"]
         },
         "fmt",
         "nlohmann-json"
