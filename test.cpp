@@ -11,7 +11,6 @@ enum class fox {
   green = 24,
 };
 
-constexpr fox default_fox = fox::red;
 struct vec3 {
   float x;
   float y;

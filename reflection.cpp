@@ -16,45 +16,12 @@ constexpr void for_each_member(Point &data, auto &&callback) {
   callback(data.name, "std::string", "name", 3);
   callback(data.path, "std::filesystem::path", "path", 4);
 }
-bool set_as(auto &target, std::string_view target_name, const auto &value) {
-  bool result = false;
-  for_each_member(target, [&](auto &target_prop, auto, auto name, auto) {
-    if constexpr (requires { target_prop = value; }) {
-      if (name == target_name) {
-        target_prop = value;
-        result = true;
-      }
-    }
-  });
 
-  return result;
-}
 #include <optional>
-template <typename T>
-std::optional<T> get_as(auto &target, std::string_view target_name) {
-  std::optional<T> result_value;
-  for_each_member(target, [&](auto &target_prop, auto, auto name, auto) {
-    if constexpr (requires {
-                    requires std::is_same_v<
-                        T, std::remove_reference_t<decltype(target_prop)>>;
-                  }) {
-      if (name == target_name) {
-        result_value = target_prop;
-      }
-                  }
-  });
-
-  return result_value;
-}
-
-constexpr int get_member_size(auto &target) {
-  int size;
-  for_each_member(target, [&size](auto, auto, auto, auto) { size++; });
-  return size;
-}
-
+#include "reflection.hpp"
 #include <iostream>
 int main() {
+  using namespace creflec;
   Point point;
   std::string member_names[get_member_size(point)];
   std::cout << "Point has " << get_member_size(point) << " members.\n";

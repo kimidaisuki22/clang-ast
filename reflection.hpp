@@ -19,7 +19,6 @@ bool set_as(auto &target, std::string_view target_name, const auto &value) {
 }
 template <typename T>
 std::optional<T> get_as(auto &target, std::string_view target_name) {
-  bool result = false;
   std::optional<T> result_value;
   for_each_member(target, [&](auto &target_prop, auto, auto name, auto) {
     if constexpr (requires {
@@ -28,13 +27,7 @@ std::optional<T> get_as(auto &target, std::string_view target_name) {
                   }) {
       if (name == target_name) {
         result_value = target_prop;
-        result = true;
-        return true;
-      } else {
-        return false;
       }
-    } else {
-      return false;
     }
   });
 
@@ -50,7 +43,9 @@ constexpr auto print_call_back = [](auto v, auto t, auto n, auto idx) {
   if constexpr (requires { std::cout << v; }) {
     std::cout << t << " " << n << "[" << v << "] " << idx << "\n";
   } else {
-    std::cout << t << " " << n << " <" << "Type not support" << "> pos: " << idx << "\n";
+    std::cout << t << " " << n << " <"
+              << "Type not support"
+              << "> pos: " << idx << "\n";
   }
 };
 } // namespace creflec
