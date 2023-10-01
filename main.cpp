@@ -1,7 +1,9 @@
+#include "get_prev_line.h"
 #include <clang-c/CXString.h>
 #include <clang-c/Index.h>
 #include <cstdint>
 #include <fmt/core.h>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <string_view>
@@ -26,7 +28,7 @@ bool pos_check(std::string_view str, int pos, char ch) {
   return str[pos] == ch;
 }
 
-std::string src = "header.hpp";
+std::string src = "../header.hpp";
 struct Member_info {
   std::string type;
   std::string name;
@@ -211,9 +213,17 @@ int main() {
             CXFile file{};
             uint32_t line{}, col{}, offset{};
             clang_getSpellingLocation(location, &file, &line, &col, &offset);
-            fmt::println("Location {}:{}:{} [{}]",
+            std::ifstream source_file_stream{src};
+
+            source_file_stream.seekg(offset);
+            std::string line_str;
+            std::getline(source_file_stream,line_str);
+            source_file_stream.seekg(offset);
+            auto prev_line = get_prev_line(source_file_stream);
+
+            fmt::println("Location {}:{}:{} [{}] content: {} prev: {}",
                          clang_getCString(clang_getFileName(file)), line, col,
-                         offset);
+                         offset, line_str, get_double_slash_comment(prev_line));
           }
 
           if (kind == CXCursor_FieldDecl) {

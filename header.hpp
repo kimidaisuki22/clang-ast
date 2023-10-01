@@ -53,3 +53,9 @@ struct vec3 {
     return {1,1,1};
   }
 };
+struct IO_config{
+  // The input file.
+  std::filesystem::path input;
+  // The output file.
+  std::filesystem::path output;
+};
