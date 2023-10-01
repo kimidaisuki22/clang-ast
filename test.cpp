@@ -40,26 +40,29 @@ struct Point {
 constexpr void for_each_member(const Point &data, auto &&callback) {
   callback(data.x, "int", "x", 0);
   callback(data.y, "int", "y", 1);
-  callback(data.b, "Constants::Box", "b", 2);
   callback(data.name, "std::string", "name", 3);
   callback(data.path, "std::filesystem::path", "path", 4);
 }
 constexpr void for_each_member(Point &data, auto &&callback) {
   callback(data.x, "int", "x", 0);
   callback(data.y, "int", "y", 1);
-  callback(data.b, "Constants::Box", "b", 2);
   callback(data.name, "std::string", "name", 3);
   callback(data.path, "std::filesystem::path", "path", 4);
 }
 constexpr void for_each_member(Point &&data, auto &&callback) {
   callback(data.x, "int", "x", 0);
   callback(data.y, "int", "y", 1);
-  callback(data.b, "Constants::Box", "b", 2);
   callback(data.name, "std::string", "name", 3);
   callback(data.path, "std::filesystem::path", "path", 4);
 }
+#include <CLI/CLI.hpp>
 #include <nlohmann/json.hpp>
-int main() {
+int main(int argc, char **argv) {
+  CLI::App app{"App description"};
+  Point point;
+  creflec::bind_cli11(app,point);
+
+  CLI11_PARSE(app, argc, argv);
   std::cout << creflec::get_member_size(Point{}) << "\n";
   Point p;
   const auto cp = p;

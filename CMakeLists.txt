@@ -31,6 +31,7 @@ include(CPack)
 
   find_package(fmt CONFIG REQUIRED)
   find_package(nlohmann_json CONFIG REQUIRED)
+  find_package(CLI11 CONFIG REQUIRED)
   target_link_libraries(ast PRIVATE fmt::fmt)
   add_executable(test_p test.cpp)
-  target_link_libraries(test_p PRIVATE fmt::fmt  nlohmann_json::nlohmann_json)
+  target_link_libraries(test_p PRIVATE CLI11::CLI11 fmt::fmt  nlohmann_json::nlohmann_json)

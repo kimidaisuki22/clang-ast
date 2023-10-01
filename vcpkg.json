@@ -9,6 +9,7 @@
             "features": ["clang"]
         },
         "fmt",
-        "nlohmann-json"
+        "nlohmann-json",
+        "cli11"
     ]
 }
