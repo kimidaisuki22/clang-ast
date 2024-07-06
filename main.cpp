@@ -28,7 +28,6 @@ bool pos_check(std::string_view str, size_t pos, char ch) {
   return str[pos] == ch;
 }
 
-std::string src = "../header.hpp";
 struct Member_info {
   std::string type;
   std::string name;
@@ -137,7 +136,9 @@ struct Member_function_info {
 };
 std::unordered_map<std::string, std::vector<Member_function_info>> methods;
 
-int main() {
+std::string src;
+int main(int argc, char **cargv) {
+  src = cargv[1];
   CXIndex index = clang_createIndex(1, 0);
   const char *argv[] = {"-std=c++20"};
   CXTranslationUnit unit =
@@ -217,7 +218,7 @@ int main() {
 
             source_file_stream.seekg(offset);
             std::string line_str;
-            std::getline(source_file_stream,line_str);
+            std::getline(source_file_stream, line_str);
             source_file_stream.seekg(offset);
             auto prev_line = get_prev_line(source_file_stream);
 
